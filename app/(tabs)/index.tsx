@@ -1,5 +1,5 @@
-import { FlatList, Text, View, TouchableOpacity, Linking, Image } from "react-native";
-import { useState } from "react";
+import { FlatList, Text, View, TouchableOpacity, Linking, Image, TextInput } from "react-native";
+import { useState, useMemo } from "react";
 
 import { ScreenContainer } from "@/components/screen-container";
 
@@ -60,6 +60,17 @@ const WHATSAPP_NUMBER = "5511988287407";
 
 export default function HomeScreen() {
   const [produtos] = useState<Produto[]>(PRODUTOS_MOCK);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filtrar produtos baseado na busca
+  const produtosFiltrados = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return produtos;
+    }
+    return produtos.filter((produto) =>
+      produto.nome.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [produtos, searchQuery]);
 
   const handleComprarWhatsApp = (produto: Produto) => {
     const mensagem = `Olá! Tenho interesse no produto: *${produto.nome}* - ${produto.preco}`;
@@ -108,13 +119,34 @@ export default function HomeScreen() {
 
   return (
     <ScreenContainer className="bg-background">
-      <FlatList
-        data={produtos}
-        renderItem={renderProduto}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
-        scrollEnabled={true}
-      />
+      {/* Campo de Busca */}
+      <View className="px-4 pt-4 pb-3">
+        <TextInput
+          placeholder="Buscar produtos..."
+          placeholderTextColor="#687076"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
+        />
+      </View>
+
+      {/* Lista de Produtos */}
+      {produtosFiltrados.length > 0 ? (
+        <FlatList
+          data={produtosFiltrados}
+          renderItem={renderProduto}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingTop: 0, paddingBottom: 16 }}
+          scrollEnabled={true}
+        />
+      ) : (
+        <View className="flex-1 items-center justify-center px-4">
+          <Text className="text-lg font-semibold text-foreground mb-2">Nenhum produto encontrado</Text>
+          <Text className="text-sm text-muted text-center">
+            Tente buscar por outro nome
+          </Text>
+        </View>
+      )}
     </ScreenContainer>
   );
 }
