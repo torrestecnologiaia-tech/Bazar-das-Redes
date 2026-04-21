@@ -1,48 +1,120 @@
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
+import { FlatList, Text, View, TouchableOpacity, Linking, Image } from "react-native";
+import { useState } from "react";
 
 import { ScreenContainer } from "@/components/screen-container";
 
-/**
- * Home Screen - NativeWind Example
- *
- * This template uses NativeWind (Tailwind CSS for React Native).
- * You can use familiar Tailwind classes directly in className props.
- *
- * Key patterns:
- * - Use `className` instead of `style` for most styling
- * - Theme colors: use tokens directly (bg-background, text-foreground, bg-primary, etc.); no dark: prefix needed
- * - Responsive: standard Tailwind breakpoints work on web
- * - Custom colors defined in tailwind.config.js
- */
+interface Produto {
+  id: string;
+  nome: string;
+  preco: string;
+  descricao: string;
+  imagemUrl: string;
+}
+
+const PRODUTOS_MOCK: Produto[] = [
+  {
+    id: "1",
+    nome: "Bolsa de Couro",
+    preco: "R$ 89,90",
+    descricao: "Bolsa de couro genuíno, marrom escuro, perfeita para uso diário",
+    imagemUrl: "https://via.placeholder.com/100?text=Bolsa",
+  },
+  {
+    id: "2",
+    nome: "Óculos de Sol",
+    preco: "R$ 59,90",
+    descricao: "Óculos UV 400, lentes polarizadas, proteção total",
+    imagemUrl: "https://via.placeholder.com/100?text=Óculos",
+  },
+  {
+    id: "3",
+    nome: "Cinto de Couro",
+    preco: "R$ 45,90",
+    descricao: "Cinto de couro legítimo, fivela de metal, tamanho ajustável",
+    imagemUrl: "https://via.placeholder.com/100?text=Cinto",
+  },
+  {
+    id: "4",
+    nome: "Carteira Slim",
+    preco: "R$ 39,90",
+    descricao: "Carteira slim em couro, compartimentos para cartões e notas",
+    imagemUrl: "https://via.placeholder.com/100?text=Carteira",
+  },
+  {
+    id: "5",
+    nome: "Mochila Casual",
+    preco: "R$ 129,90",
+    descricao: "Mochila de lona resistente, múltiplos compartimentos, alças confortáveis",
+    imagemUrl: "https://via.placeholder.com/100?text=Mochila",
+  },
+  {
+    id: "6",
+    nome: "Relógio Analógico",
+    preco: "R$ 99,90",
+    descricao: "Relógio de pulso clássico, pulseira de couro, resistente à água",
+    imagemUrl: "https://via.placeholder.com/100?text=Relógio",
+  },
+];
+
+const WHATSAPP_NUMBER = "5511988287407";
+
 export default function HomeScreen() {
-  return (
-    <ScreenContainer className="p-6">
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex-1 gap-8">
-          {/* Hero Section */}
-          <View className="items-center gap-2">
-            <Text className="text-4xl font-bold text-foreground">Welcome</Text>
-            <Text className="text-base text-muted text-center">
-              Edit app/(tabs)/index.tsx to get started
-            </Text>
-          </View>
+  const [produtos] = useState<Produto[]>(PRODUTOS_MOCK);
 
-          {/* Example Card */}
-          <View className="w-full max-w-sm self-center bg-surface rounded-2xl p-6 shadow-sm border border-border">
-            <Text className="text-lg font-semibold text-foreground mb-2">NativeWind Ready</Text>
-            <Text className="text-sm text-muted leading-relaxed">
-              Use Tailwind CSS classes directly in your React Native components.
-            </Text>
-          </View>
+  const handleComprarWhatsApp = (produto: Produto) => {
+    const mensagem = `Olá! Tenho interesse no produto: *${produto.nome}* - ${produto.preco}`;
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(mensagem)}`;
+    Linking.openURL(url).catch(() => {
+      alert("WhatsApp não está instalado. Por favor, instale o WhatsApp para continuar.");
+    });
+  };
 
-          {/* Example Button */}
-          <View className="items-center">
-            <TouchableOpacity className="bg-primary px-6 py-3 rounded-full active:opacity-80">
-              <Text className="text-background font-semibold">Get Started</Text>
-            </TouchableOpacity>
-          </View>
+  const renderProduto = ({ item }: { item: Produto }) => (
+    <View className="mx-4 mb-4 bg-surface rounded-2xl overflow-hidden border border-border shadow-sm">
+      <View className="flex-row p-4 gap-3">
+        {/* Imagem */}
+        <Image
+          source={{ uri: item.imagemUrl }}
+          className="w-20 h-20 rounded-lg bg-gray-200"
+          resizeMode="cover"
+        />
+
+        {/* Conteúdo */}
+        <View className="flex-1">
+          {/* Nome */}
+          <Text className="text-base font-bold text-foreground mb-1" numberOfLines={1}>
+            {item.nome}
+          </Text>
+
+          {/* Preço */}
+          <Text className="text-lg font-bold text-primary mb-2">{item.preco}</Text>
+
+          {/* Descrição */}
+          <Text className="text-xs text-muted mb-3" numberOfLines={2}>
+            {item.descricao}
+          </Text>
+
+          {/* Botão WhatsApp */}
+          <TouchableOpacity
+            onPress={() => handleComprarWhatsApp(item)}
+            className="bg-success px-3 py-2 rounded-lg flex-row items-center justify-center active:opacity-70"
+          >
+            <Text className="text-white text-xs font-semibold">Comprar via WhatsApp</Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
+    </View>
+  );
+
+  return (
+    <ScreenContainer className="bg-background">
+      <FlatList
+        data={produtos}
+        renderItem={renderProduto}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: 16 }}
+        scrollEnabled={true}
+      />
     </ScreenContainer>
   );
 }
