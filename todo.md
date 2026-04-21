@@ -14,7 +14,6 @@
 
 - [x] Campo de busca para filtrar produtos por nome
 - [x] Aba de Favoritos com persistência local
-- [x] Sistema de avaliações e comentários para produtos
 
 ## Melhorias Futuras
 

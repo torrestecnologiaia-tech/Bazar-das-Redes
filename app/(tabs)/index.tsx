@@ -1,11 +1,9 @@
 import { FlatList, Text, View, TouchableOpacity, Linking, Image, TextInput } from "react-native";
 import { useState, useMemo } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 
 import { ScreenContainer } from "@/components/screen-container";
 import { useFavorites } from "@/hooks/use-favorites";
-import { useReviews } from "@/hooks/use-reviews";
 
 interface Produto {
   id: string;
@@ -63,11 +61,9 @@ const PRODUTOS_MOCK: Produto[] = [
 const WHATSAPP_NUMBER = "5511988287407";
 
 export default function HomeScreen() {
-  const router = useRouter();
   const [produtos] = useState<Produto[]>(PRODUTOS_MOCK);
   const [searchQuery, setSearchQuery] = useState("");
   const { isFavorited, toggleFavorite } = useFavorites();
-  const { getAverageRating } = useReviews();
 
   // Filtrar produtos baseado na busca
   const produtosFiltrados = useMemo(() => {
@@ -89,13 +85,9 @@ export default function HomeScreen() {
 
   const renderProduto = ({ item }: { item: Produto }) => {
     const isFav = isFavorited(item.id);
-    const avgRating = getAverageRating(item.id);
 
     return (
-      <TouchableOpacity
-        onPress={() => router.push({ pathname: "/product-details", params: { id: item.id } })}
-        className="mx-4 mb-4 bg-surface rounded-2xl overflow-hidden border border-border shadow-sm"
-      >
+      <View className="mx-4 mb-4 bg-surface rounded-2xl overflow-hidden border border-border shadow-sm">
         <View className="flex-row p-4 gap-3">
           {/* Imagem */}
           <Image
@@ -132,17 +124,14 @@ export default function HomeScreen() {
 
             {/* Botão WhatsApp */}
             <TouchableOpacity
-              onPress={(e) => {
-                e.stopPropagation();
-                handleComprarWhatsApp(item);
-              }}
+              onPress={() => handleComprarWhatsApp(item)}
               className="bg-success px-3 py-2 rounded-lg flex-row items-center justify-center active:opacity-70"
             >
               <Text className="text-white text-xs font-semibold">Comprar via WhatsApp</Text>
             </TouchableOpacity>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
