@@ -10,10 +10,6 @@
 - [x] Gerar logo/ícone da marca
 - [x] Atualizar app.config.ts com nome e branding
 
-## Funcionalidades Recentes
-
-- [x] Campo de busca para filtrar produtos por nome
-
 ## Melhorias Futuras
 
 - [ ] Adicionar aba de Favoritos
