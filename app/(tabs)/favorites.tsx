@@ -1,4 +1,4 @@
-import { FlatList, Text, View, TouchableOpacity, Linking, Image, TextInput } from "react-native";
+import { FlatList, Text, View, TouchableOpacity, Linking, Image } from "react-native";
 import { useState, useMemo } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -60,20 +60,14 @@ const PRODUTOS_MOCK: Produto[] = [
 
 const WHATSAPP_NUMBER = "5511988287407";
 
-export default function HomeScreen() {
+export default function FavoritesScreen() {
   const [produtos] = useState<Produto[]>(PRODUTOS_MOCK);
-  const [searchQuery, setSearchQuery] = useState("");
-  const { isFavorited, toggleFavorite } = useFavorites();
+  const { favorites, isFavorited, toggleFavorite } = useFavorites();
 
-  // Filtrar produtos baseado na busca
-  const produtosFiltrados = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return produtos;
-    }
-    return produtos.filter((produto) =>
-      produto.nome.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [produtos, searchQuery]);
+  // Filtrar apenas produtos favoritados
+  const produtosFavoritados = useMemo(() => {
+    return produtos.filter((produto) => favorites.includes(produto.id));
+  }, [produtos, favorites]);
 
   const handleComprarWhatsApp = (produto: Produto) => {
     const mensagem = `Olá! Tenho interesse no produto: *${produto.nome}* - ${produto.preco}`;
@@ -137,21 +131,18 @@ export default function HomeScreen() {
 
   return (
     <ScreenContainer className="bg-background">
-      {/* Campo de Busca */}
+      {/* Título */}
       <View className="px-4 pt-4 pb-3">
-        <TextInput
-          placeholder="Buscar produtos..."
-          placeholderTextColor="#687076"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          className="bg-surface border border-border rounded-lg px-4 py-3 text-foreground"
-        />
+        <Text className="text-2xl font-bold text-foreground">Meus Favoritos</Text>
+        <Text className="text-sm text-muted mt-1">
+          {produtosFavoritados.length} produto{produtosFavoritados.length !== 1 ? "s" : ""}
+        </Text>
       </View>
 
-      {/* Lista de Produtos */}
-      {produtosFiltrados.length > 0 ? (
+      {/* Lista de Produtos Favoritados */}
+      {produtosFavoritados.length > 0 ? (
         <FlatList
-          data={produtosFiltrados}
+          data={produtosFavoritados}
           renderItem={renderProduto}
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingTop: 0, paddingBottom: 16 }}
@@ -159,9 +150,12 @@ export default function HomeScreen() {
         />
       ) : (
         <View className="flex-1 items-center justify-center px-4">
-          <Text className="text-lg font-semibold text-foreground mb-2">Nenhum produto encontrado</Text>
+          <MaterialIcons name="favorite-border" size={64} color="#687076" />
+          <Text className="text-lg font-semibold text-foreground mt-4 mb-2">
+            Nenhum favorito ainda
+          </Text>
           <Text className="text-sm text-muted text-center">
-            Tente buscar por outro nome
+            Adicione produtos à sua lista de favoritos para acessá-los rapidamente
           </Text>
         </View>
       )}
