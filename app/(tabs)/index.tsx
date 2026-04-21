@@ -1,9 +1,7 @@
 import { FlatList, Text, View, TouchableOpacity, Linking, Image, TextInput } from "react-native";
 import { useState, useMemo } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import { ScreenContainer } from "@/components/screen-container";
-import { useFavorites } from "@/hooks/use-favorites";
 
 interface Produto {
   id: string;
@@ -63,7 +61,6 @@ const WHATSAPP_NUMBER = "5511988287407";
 export default function HomeScreen() {
   const [produtos] = useState<Produto[]>(PRODUTOS_MOCK);
   const [searchQuery, setSearchQuery] = useState("");
-  const { isFavorited, toggleFavorite } = useFavorites();
 
   // Filtrar produtos baseado na busca
   const produtosFiltrados = useMemo(() => {
@@ -83,57 +80,42 @@ export default function HomeScreen() {
     });
   };
 
-  const renderProduto = ({ item }: { item: Produto }) => {
-    const isFav = isFavorited(item.id);
+  const renderProduto = ({ item }: { item: Produto }) => (
+    <View className="mx-4 mb-4 bg-surface rounded-2xl overflow-hidden border border-border shadow-sm">
+      <View className="flex-row p-4 gap-3">
+        {/* Imagem */}
+        <Image
+          source={{ uri: item.imagemUrl }}
+          className="w-20 h-20 rounded-lg bg-gray-200"
+          resizeMode="cover"
+        />
 
-    return (
-      <View className="mx-4 mb-4 bg-surface rounded-2xl overflow-hidden border border-border shadow-sm">
-        <View className="flex-row p-4 gap-3">
-          {/* Imagem */}
-          <Image
-            source={{ uri: item.imagemUrl }}
-            className="w-20 h-20 rounded-lg bg-gray-200"
-            resizeMode="cover"
-          />
+        {/* Conteúdo */}
+        <View className="flex-1">
+          {/* Nome */}
+          <Text className="text-base font-bold text-foreground mb-1" numberOfLines={1}>
+            {item.nome}
+          </Text>
 
-          {/* Conteúdo */}
-          <View className="flex-1">
-            {/* Nome e Botão de Favorito */}
-            <View className="flex-row items-center justify-between mb-1">
-              <Text className="text-base font-bold text-foreground flex-1" numberOfLines={1}>
-                {item.nome}
-              </Text>
-              <TouchableOpacity
-                onPress={() => toggleFavorite(item.id)}
-              >
-                <MaterialIcons
-                  name={isFav ? "favorite" : "favorite-border"}
-                  size={20}
-                  color={isFav ? "#2E7D32" : "#687076"}
-                />
-              </TouchableOpacity>
-            </View>
+          {/* Preço */}
+          <Text className="text-lg font-bold text-primary mb-2">{item.preco}</Text>
 
-            {/* Preço */}
-            <Text className="text-lg font-bold text-primary mb-2">{item.preco}</Text>
+          {/* Descrição */}
+          <Text className="text-xs text-muted mb-3" numberOfLines={2}>
+            {item.descricao}
+          </Text>
 
-            {/* Descrição */}
-            <Text className="text-xs text-muted mb-3" numberOfLines={2}>
-              {item.descricao}
-            </Text>
-
-            {/* Botão WhatsApp */}
-            <TouchableOpacity
-              onPress={() => handleComprarWhatsApp(item)}
-              className="bg-success px-3 py-2 rounded-lg flex-row items-center justify-center active:opacity-70"
-            >
-              <Text className="text-white text-xs font-semibold">Comprar via WhatsApp</Text>
-            </TouchableOpacity>
-          </View>
+          {/* Botão WhatsApp */}
+          <TouchableOpacity
+            onPress={() => handleComprarWhatsApp(item)}
+            className="bg-success px-3 py-2 rounded-lg flex-row items-center justify-center active:opacity-70"
+          >
+            <Text className="text-white text-xs font-semibold">Comprar via WhatsApp</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    );
-  };
+    </View>
+  );
 
   return (
     <ScreenContainer className="bg-background">

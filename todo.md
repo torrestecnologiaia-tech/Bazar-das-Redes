@@ -13,10 +13,10 @@
 ## Funcionalidades Recentes
 
 - [x] Campo de busca para filtrar produtos por nome
-- [x] Aba de Favoritos com persistência local
 
 ## Melhorias Futuras
 
+- [ ] Adicionar aba de Favoritos
 - [ ] Busca e filtros de produtos
 - [ ] Perfil do vendedor
 - [ ] Histórico de compras
