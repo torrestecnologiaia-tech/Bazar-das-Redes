@@ -1,7 +1,7 @@
 import { FlatList, Text, View, TouchableOpacity, Linking, Image } from "react-native";
 import { useState } from "react";
-
 import { ScreenContainer } from "@/components/screen-container";
+import { useShareProduct } from "@/hooks/use-share-product";
 
 interface Produto {
   id: string;
@@ -60,6 +60,7 @@ const WHATSAPP_NUMBER = "5511988287407";
 
 export default function HomeScreen() {
   const [produtos] = useState<Produto[]>(PRODUTOS_MOCK);
+  const { shareProduct } = useShareProduct();
 
   const handleComprarWhatsApp = (produto: Produto) => {
     const mensagem = `Olá! Tenho interesse no produto: *${produto.nome}* - ${produto.preco}`;
@@ -67,6 +68,14 @@ export default function HomeScreen() {
     Linking.openURL(url).catch(() => {
       alert("WhatsApp não está instalado. Por favor, instale o WhatsApp para continuar.");
     });
+  };
+
+  const handleCompartilhar = async (produto: Produto) => {
+    try {
+      await shareProduct(produto);
+    } catch (error) {
+      console.error("Erro ao compartilhar:", error);
+    }
   };
 
   const renderProduto = ({ item }: { item: Produto }) => (
@@ -94,13 +103,21 @@ export default function HomeScreen() {
             {item.descricao}
           </Text>
 
-          {/* Botão WhatsApp */}
-          <TouchableOpacity
-            onPress={() => handleComprarWhatsApp(item)}
-            className="bg-success px-3 py-2 rounded-lg flex-row items-center justify-center active:opacity-70"
-          >
-            <Text className="text-white text-xs font-semibold">Comprar via WhatsApp</Text>
-          </TouchableOpacity>
+          {/* Botões */}
+          <View className="flex-row gap-2">
+            <TouchableOpacity
+              onPress={() => handleComprarWhatsApp(item)}
+              className="flex-1 bg-success px-3 py-2 rounded-lg flex-row items-center justify-center active:opacity-70"
+            >
+              <Text className="text-white text-xs font-semibold">WhatsApp</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleCompartilhar(item)}
+              className="px-3 py-2 rounded-lg bg-primary flex-row items-center justify-center active:opacity-70"
+            >
+              <Text className="text-white text-xs font-semibold">Compartilhar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>

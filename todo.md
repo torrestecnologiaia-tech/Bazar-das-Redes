@@ -10,14 +10,20 @@
 - [x] Gerar logo/ícone da marca
 - [x] Atualizar app.config.ts com nome e branding
 
+## Melhorias Essenciais (Concluídas)
+
+- [x] Busca avançada por nome e descrição
+- [x] Modo escuro (Dark Mode)
+- [x] Visualização de fotos em tela cheia com zoom
+- [x] Compartilhamento de anúncios via WhatsApp/outros apps
+- [x] Melhorias de UX/UI e performance
+
 ## Melhorias Futuras
 
-- [ ] Adicionar aba de Favoritos
-- [ ] Busca e filtros de produtos
 - [ ] Perfil do vendedor
 - [ ] Histórico de compras
 - [ ] Integração com backend/Firebase
-- [ ] Imagens reais de produtos
+- [ ] Notificações push
 
 ## Bugs & Ajustes
 
