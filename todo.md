@@ -25,6 +25,12 @@
 - [ ] Integração com backend/Firebase
 - [ ] Notificações push
 
-## Bugs & Ajustes
+## Testes e Publicação
 
-- [ ] Verificar TypeScript errors no servidor
+- [x] TypeScript check - Sem erros
+- [x] Linter - Sem erros críticos
+- [x] Testes unitários - Passando
+- [x] Push para GitHub - Concluído
+- [x] Documentação Google Play - Criada
+- [x] README em Português - Criado
+- [x] Pronto para publicação no Google Play

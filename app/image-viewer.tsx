@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { View, Text, ScrollView, Pressable, Dimensions } from 'react-native';
+import { View, Text, Pressable, Dimensions } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { ScreenContainer } from '@/components/screen-container';
-import { useColors } from '@/hooks/use-colors';
 import { cn } from '@/lib/utils';
 
 export default function ImageViewerScreen() {
   const router = useRouter();
-  const colors = useColors();
   const params = useLocalSearchParams();
   
   const images = Array.isArray(params.images) 
@@ -17,7 +15,6 @@ export default function ImageViewerScreen() {
   const initialIndex = parseInt(params.index as string) || 0;
   
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-  const [scale, setScale] = useState(1);
 
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
@@ -25,14 +22,12 @@ export default function ImageViewerScreen() {
   const handlePrevious = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
-      setScale(1);
     }
   };
 
   const handleNext = () => {
     if (currentIndex < images.length - 1) {
       setCurrentIndex(currentIndex + 1);
-      setScale(1);
     }
   };
 
@@ -58,16 +53,11 @@ export default function ImageViewerScreen() {
         </View>
 
         {/* Imagem Principal */}
-        <ScrollView 
-          scrollEventThrottle={16}
-          maximumZoomScale={3}
-          minimumZoomScale={1}
-          className="flex-1"
-          contentContainerStyle={{
+        <View 
+          className="flex-1 justify-center items-center"
+          style={{
             width: screenWidth,
             height: screenHeight - 140,
-            justifyContent: 'center',
-            alignItems: 'center',
           }}
         >
           <Image
@@ -79,7 +69,7 @@ export default function ImageViewerScreen() {
             }}
             contentFit="contain"
           />
-        </ScrollView>
+        </View>
 
         {/* Navegação */}
         <View className="flex-row items-center justify-between px-4 py-4 bg-black border-t border-border">
@@ -102,7 +92,6 @@ export default function ImageViewerScreen() {
                 key={index}
                 onPress={() => {
                   setCurrentIndex(index);
-                  setScale(1);
                 }}
                 className={cn(
                   "w-2 h-2 rounded-full",
